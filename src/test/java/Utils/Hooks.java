@@ -2,50 +2,52 @@ package Utils;
 
 //import org.junit.After;
 //import org.junit.Before;
-import org.openqa.selenium.OutputType; 
+
+import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 
 import io.cucumber.java.After;
 import io.cucumber.java.Before;
 import io.cucumber.java.Scenario;
 
-public class Hooks extends CommonFunctions {
-	Config conFig = new Config();
-	TestContext testContext;
+import static Utils.CommonFunctions.driver;
 
-	public Hooks(TestContext context) {
-		testContext = context;
-	}
+public class Hooks {
+    Config conFig = new Config();
+    TestContext testContext;
 
-	@Before
-	public void beforeScenario(Scenario scenario) {
-		System.out.println(scenario.getName());
-		System.out.println("Hooks before");
-		Config.setScenarioContext("Scenario", scenario);
-	}
+    public Hooks(TestContext context) {
+        testContext = context;
+    }
 
-	@After
-	public void afterScenario(final Scenario scenario) {
-		if (scenario.isFailed()) {
+    @Before
+    public void beforeScenario(Scenario scenario) {
+        System.out.println("Hooks before");
+        System.out.println(scenario.getName());
+        Config.setScenarioContext("Scenario", scenario);
+    }
 
-			
+    @After
+    public void afterScenario(final Scenario scenario) {
+        if (scenario.isFailed()) {
 
-			if (!(driver == null)) {
 
-				try {
+            if (!(driver == null)) {
 
-					TakesScreenshot ts = (TakesScreenshot) driver;
+                try {
 
-					byte[] screenshot = ts.getScreenshotAs(OutputType.BYTES);
-					String screenshotName = scenario.getName().replaceAll(" ", "");
-					scenario.attach(screenshot, "image/png", screenshotName);
-				} catch (Exception e) {
-					System.out.println("Screenshot not created....");
-				}
-			}
+                    TakesScreenshot ts = (TakesScreenshot) driver;
 
-			driver.close();
-		}
-	}
+                    byte[] screenshot = ts.getScreenshotAs(OutputType.BYTES);
+                    String screenshotName = scenario.getName().replaceAll(" ", "");
+                    scenario.attach(screenshot, "image/png", screenshotName);
+                } catch (Exception e) {
+                    System.out.println("Screenshot not created....");
+                }
+            }
+
+            driver.close();
+        }
+    }
 
 }
